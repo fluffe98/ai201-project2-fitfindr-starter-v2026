@@ -13,6 +13,8 @@ Build and test your three tools in `tools.py` first. Then come here.
     python agent.py          runs both example paths below
 """
 
+import re
+
 import config
 import trace
 from tools import search_listings, suggest_outfit, create_fit_card
@@ -45,6 +47,33 @@ def new_session(query: str, wardrobe: dict) -> dict:
         "fit_card": None,            # what create_fit_card returned
         "error": None,               # set when the run ended early
     }
+
+
+# ── query parsing ─────────────────────────────────────────────────────────────
+
+_PRICE_UNDER = re.compile(r"\bunder\s*\$?\s*(\d+(?:\.\d+)?)", re.I)
+_PRICE_DOLLAR = re.compile(r"\$\s*(\d+(?:\.\d+)?)")
+_SIZE = re.compile(r"\bsize\s+([A-Za-z0-9]+)", re.I)
+
+
+def parse_query(query: str) -> dict:
+    """Regex parse: price from "under $N" or "$N", size from "size X", the rest is the description."""
+    text = query
+    max_price = None
+    size = None
+
+    m = _PRICE_UNDER.search(text) or _PRICE_DOLLAR.search(text)
+    if m:
+        max_price = float(m.group(1))
+        text = text[:m.start()] + " " + text[m.end():]
+
+    m = _SIZE.search(text)
+    if m:
+        size = m.group(1)
+        text = text[:m.start()] + " " + text[m.end():]
+
+    description = " ".join(re.findall(r"[A-Za-z0-9'-]+", text))
+    return {"description": description, "size": size, "max_price": max_price}
 
 
 # ── planning loop ─────────────────────────────────────────────────────────────
@@ -106,9 +135,37 @@ def run_agent(query: str, wardrobe: dict) -> dict:
         than a stack trace. The import is already at the top of this file.
     """
     session = new_session(query, wardrobe)
+    session["parsed"] = parse_query(query)
 
-    # TODO: delete these two lines and build the loop.
-    session["error"] = "The planning loop isn't built yet — see the TODO in agent.py."
+    # Each pass picks the next tool from what is already in the session.
+    count = 0
+    while session["fit_card"] is None:
+        count += 1
+        trace.check_iterations(count)
+
+        if not session["search_results"]:
+            parsed = session["parsed"]
+            session["search_results"] = search_listings(
+                parsed["description"], parsed["size"], parsed["max_price"]
+            )
+            if not session["search_results"]:
+                session["error"] = (
+                    "No listings matched. Try raising your budget, dropping the "
+                    "size, or using broader words."
+                )
+                return session
+            session["selected_item"] = session["search_results"][0]
+
+        elif session["outfit_suggestion"] is None:
+            session["outfit_suggestion"] = suggest_outfit(
+                session["selected_item"], session["wardrobe"]
+            )
+
+        else:
+            session["fit_card"] = create_fit_card(
+                session["outfit_suggestion"], session["selected_item"]
+            )
+
     return session
 
 
