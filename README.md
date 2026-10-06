@@ -47,59 +47,41 @@
 
 ## Tool Inventory
 
-<!-- Four lines per tool. This is worth 2 points and it's the single most
-     common place students lose them.
-
-     "Returns a list" earns NOTHING. The description has to say what is IN
-     the list.
-
-     The empty case isn't optional either — it's the thing your loop branches
-     on, and if you don't decide it here you'll discover it as a crash in
-     Milestone 5. -->
-
 ### `search_listings`
 
-- **What it does:**
-- **Inputs:** <!-- name and type each: `max_price` (float), not "a price" -->
-- **Returns:**
-- **When it has nothing:**
+- **What it does:** Searches the listings data for items matching a description, with an optional size filter and an optional price ceiling.
+- **Inputs:** `description` (str), `size` (str or None), `max_price` (float or None)
+- **Returns:** A list of listing dicts, best match first, at most `config.SEARCH_RESULT_LIMIT` long. Each dict has `id`, `title`, `description`, `category`, `style_tags` (list), `size`, `condition`, `price` (float), `colors` (list), `brand` (str or None), `platform`.
+  - Price rule: inclusive, so a listing passes when `price <= max_price`.
+  - Size rule: the listing size is lowercased and split on spaces, slashes and brackets into tokens. The requested size (lowercased) must equal one whole token. So "M" matches "S/M" and "M/L" but not "XL", and "L" does not match "XL". Listings with size "One Size", "One Size (adjustable)" or "One Size / Oversized" always pass the size filter. Known side effect: "L" also matches "W30 L30", because L is a whole token there.
+  - Scoring rule: each listing is scored by how many description keywords appear in its title, description, style_tags, category, colors and brand (brand may be None). A score of zero is dropped.
+- **When it has nothing:** Returns an empty list `[]`. Never `None`, never an exception.
 
 ### `suggest_outfit`
 
-- **What it does:**
-- **Inputs:**
-- **Returns:**
-- **When it has nothing:**
+- **What it does:** Suggests one or two outfits that use the found item together with pieces from the user's wardrobe.
+- **Inputs:** `new_item` (dict, a listing), `wardrobe` (dict with an `"items"` key holding a list)
+- **Returns:** A non-empty string of outfit suggestions that names wardrobe pieces the user owns.
+- **When it has nothing:** When `wardrobe["items"]` is an empty list, it returns general styling advice for the item as a non-empty string. It checks `wardrobe["items"]`, not the wardrobe dict itself, because the dict is never empty.
 
 ### `create_fit_card`
 
-- **What it does:**
-- **Inputs:**
-- **Returns:**
-- **When it has nothing:**
+- **What it does:** Writes a short social media caption about the find.
+- **Inputs:** `outfit` (str), `new_item` (dict, a listing)
+- **Returns:** A string of two to four sentences that mentions the item, its price and its platform once each, and sounds like a real post.
+- **When it has nothing:** If `outfit` is empty or only whitespace, it returns a descriptive message string saying there is no outfit to write about. Not `""` and not an exception.
 
 ---
 
 ## Planning Loop
 
-<!-- Your branch rule, stated as a rule — the condition AND both paths — plus
-     the file and function that holds it.
-
-     Like this:
-       "If search_listings returns an empty list, put a message in the session
-        and stop. Otherwise take the first result and go to suggest_outfit."
-        — agent.py::run_agent
-
-     The grader checks your code against what you claim here, so the file and
-     function have to be real. -->
-
-**Branch rule:**
+**Branch rule:** If `search_listings` returns an empty list, put a message in `session["error"]` that tells the user what to change (raise the budget, drop the size, or use broader words), leave `session["fit_card"]` as `None`, and return the session without calling `suggest_outfit`. Otherwise, take the first result as `session["selected_item"]`, call `suggest_outfit`, then call `create_fit_card`.
 
 **Where it lives:** `agent.py::run_agent`
 
-**How the query is parsed:** <!-- regex, string splitting, or asking the model — say which -->
+**How the query is parsed:** regex. A price comes from "under $N" or "$N", a size comes from "size X", and the leftover words become the description.
 
-**What moves through the session:** <!-- which fields, in what order -->
+**What moves through the session:** `query`, `parsed`, `search_results`, `selected_item`, `outfit_suggestion`, `fit_card`, with `error` set only when the run ends early.
 
 ---
 
