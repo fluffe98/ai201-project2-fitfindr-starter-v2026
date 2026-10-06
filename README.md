@@ -39,9 +39,7 @@
 
 ## What This Does
 
-<!-- Three or four sentences: what a user asks for, and what they get back. -->
-
-
+You type what you're hunting for in plain language, like "vintage graphic tee under $30, size M". FitFindr pulls the price and size out of the sentence and searches a set of secondhand listings from Depop, thredUp and Poshmark for the best match. It then suggests one or two outfits that pair the find with clothes already in your wardrobe, and writes a short social media caption (a "fit card") about it. If nothing matches, it tells you what to change, such as raising the budget, dropping the size or using broader words, instead of making something up.
 
 ---
 
@@ -87,33 +85,45 @@
 
 ## Sample Run
 
-<!-- Two things go here.
-
-     1. One FULL query and its output, pasted as text.
-     2. Your three per-tool terminal tests — the command and what it printed. -->
-
 **One full query**
 
 ```
-$ python app.py ask '...'
+$ python app.py ask 'vintage graphic tee under $30'
 
+  Found:    Y2K Baby Tee — Butterfly Print — $18.0 on depop
+
+  Outfit:   **Outfit 1: Y2K Streetwear**
+Pair the Y2K Baby Tee — Butterfly Print with your Baggy straight-leg jeans, dark wash, and layer the Black cropped zip hoodie on top. Finish the look with your Chunky white sneakers and Black crossbody bag for an effortless throwback vibe.
+
+**Outfit 2: Soft Contrast**
+Style the Y2K Baby Tee — Butterfly Print tucked into your Wide-leg khaki trousers, accented by the Brown leather belt. Throw on the Vintage black denim jacket and ground the outfit with your Black combat boots to mix sweet cottagecore elements with vintage edge.
+
+  Fit card: Found this absolute dream of a butterfly print baby tee while thrifting and I'm honestly obsessed with the Y2K energy. It's listed on Depop right now for just $18 so you can live out all your 2000s streetwear or soft grunge fantasies without breaking the bank. Grab it before I change my mind and keep it for myself!
+
+0 model calls this session, 2 served from cache
 ```
+
+Note: this run printed "0 model calls, 2 served from cache" because I had already run the same query once through `python agent.py`, so the two model answers came from the cache. The text is what the model returned the first time.
 
 **The three tools, tested one at a time**
 
 ```
 $ python -c "from tools import search_listings; print(search_listings('graphic tee', max_price=30))"
-
+[{'id': 'lst_002', 'title': 'Y2K Baby Tee — Butterfly Print', 'description': 'Super cute early 2000s baby tee with butterfly graphic. Fitted crop length. Tag says medium but fits like a small.', 'category': 'tops', 'style_tags': ['y2k', 'vintage', 'graphic tee', 'cottagecore'], 'size': 'S/M', 'condition': 'excellent', 'price': 18.0, 'colors': ['white', 'pink', 'purple'], 'brand': None, 'platform': 'depop'}, {'id': 'lst_006', 'title': 'Graphic Tee — 2003 Tour Bootleg Style', 'description': 'Vintage-style bootleg tee with faded graphic. Slightly boxy fit. 100% cotton, soft and worn-in.', 'category': 'tops', 'style_tags': ['graphic tee', 'vintage', 'grunge', 'streetwear', 'band tee'], 'size': 'L', 'condition': 'good', 'price': 24.0, 'colors': ['black'], 'brand': None, 'platform': 'depop'}, {'id': 'lst_017', 'title': 'Mesh Long-Sleeve Top — Black', 'description': 'Sheer black mesh long-sleeve. Great for layering under a graphic tee or over a bralette. Stretchy material, fits true to size.', 'category': 'tops', 'style_tags': ['y2k', 'grunge', 'goth', 'layering'], 'size': 'S/M', 'condition': 'excellent', 'price': 15.0, 'colors': ['black'], 'brand': None, 'platform': 'depop'}, {'id': 'lst_033', 'title': 'Vintage Band Tee — Faded Grey', 'description': 'Faded grey band-style tee with distressed graphic. Crew neck. Fits boxy. Well-loved but no holes or major damage.', 'category': 'tops', 'style_tags': ['vintage', 'grunge', 'band tee', 'graphic tee', 'streetwear'], 'size': 'L', 'condition': 'fair', 'price': 19.0, 'colors': ['grey', 'charcoal'], 'brand': None, 'platform': 'depop'}, {'id': 'lst_011', 'title': 'Low-Rise Cargo Pants — Khaki', 'description': 'Y2K era low-rise cargo pants. Lots of pockets. Khaki color, slightly distressed at the hems. Great for layering with a long tee.', 'category': 'bottoms', 'style_tags': ['y2k', 'cargo', '2000s', 'streetwear'], 'size': 'W29', 'condition': 'fair', 'price': 27.0, 'colors': ['khaki', 'tan'], 'brand': None, 'platform': 'poshmark'}, {'id': 'lst_012', 'title': 'Oversized Crewneck Sweatshirt — Vintage Navy', 'description': 'Perfectly faded navy crewneck. Genuinely vintage — not manufactured distressed. Ribbed cuffs and hem. No graphics, clean.', 'category': 'tops', 'style_tags': ['vintage', 'basics', 'oversized', 'classic'], 'size': 'XL (fits oversized)', 'condition': 'good', 'price': 20.0, 'colors': ['navy'], 'brand': None, 'platform': 'thredUp'}, {'id': 'lst_015', 'title': 'Vintage Graphic Hoodie — Faded Black', 'description': 'Faded black pullover hoodie with barely-visible vintage graphic on the chest. Cozy interior. Some pilling but adds to the worn-in look.', 'category': 'tops', 'style_tags': ['vintage', 'grunge', 'graphic', 'streetwear'], 'size': 'L', 'condition': 'fair', 'price': 26.0, 'colors': ['black', 'charcoal'], 'brand': None, 'platform': 'depop'}]
 ```
 
 ```
-$ python -c "from tools import suggest_outfit; ..."
+$ python -c "from tools import suggest_outfit; from utils.data_loader import get_example_wardrobe, load_listings; print(suggest_outfit(load_listings()[0], get_example_wardrobe()))"
+**Outfit 1: Casual Streetwear**
+Pair the vintage Levi's with the **White ribbed tank top** tucked in, layered under the **Vintage black denim jacket**. Finish the look with the **Chunky white sneakers**, the **Brown leather belt**, and the **Black crossbody bag** for an effortless, everyday vibe.
 
+**Outfit 2: Cozy & Classic**
+Style the medium wash jeans with the **Oversized grey crewneck sweatshirt** for a relaxed silhouette. Add the **Brown leather belt** for definition, and ground the outfit with the **Black combat boots** to balance the vintage denim with a touch of grunge.
 ```
 
 ```
-$ python -c "from tools import create_fit_card; ..."
-
+$ python -c "from tools import create_fit_card; from utils.data_loader import load_listings; print(create_fit_card('jeans and white sneakers', load_listings()[0]))"
+Finally found the holy grail of denim and they're giving major 90s off-duty model vibes when paired with fresh white sneakers. These vintage Levi's 501 jeans in the dreamiest medium wash are up on my Depop right now for just $38.00 before they sell out. Grab them while you can!
 ```
 
 ---
