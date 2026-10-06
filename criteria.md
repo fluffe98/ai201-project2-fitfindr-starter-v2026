@@ -42,60 +42,31 @@ Given a query that matches no listings, the agent stops before calling
 
 ---
 
-## 3. Something about state
+## 3. The same item is handed from search to outfit
 
-<!-- YOU WRITE THIS ONE.
+In 5 of 5 tries on a query that matches a listing, the id of the item in
+`session["selected_item"]` is the same as the id of the item passed into
+`suggest_outfit`.
 
-     How would you know that the item your search found is the same item the
-     next tool received? Name something countable or observable.
-
-     This is the criterion people find hardest, because state failure doesn't
-     look like state failure — it looks like a tool problem. Something that
-     compares session["selected_item"] against what actually reached
-     suggest_outfit is the shape you're after. -->
-
-
-
-**Why this target:**
-
+**Why this target:** Moving the item between tools is plain code with no model involved, so nothing random can change it. If it fails once, that is a bug in how I used the session, so I set 5 of 5.
 
 
 ---
 
-## 4. Something about the fit card
+## 4. The fit card has the right shape
 
-<!-- YOU WRITE THIS ONE.
+In 4 of 5 tries, the fit card is 2 to 4 sentences and mentions the item name, the price and the platform.
 
-     The fit card calls a model, so the same input can produce different words
-     each time. That's not a bug — it's the nature of the tool. So what would
-     make it acceptable?
-
-     Think about what you'd actually be unhappy to see. A caption that never
-     mentions the price? Two different items producing the same opening
-     sentence? A card longer than a caption anyone would post? Any of those can
-     be turned into a number. -->
-
-
-
-**Why this target:**
-
+**Why this target:** A model writes the caption, so the words change every run and I can't test exact text. I test things that must always be true. I picked 4 of 5 because a model sometimes skips a detail.
 
 
 ---
 
-## 5. Your choice
+## 5. Size filtering returns the right sizes
 
-<!-- YOU WRITE THIS ONE TOO.
+Across 5 searches using sizes M, L, S, XL and W30, in at least 4 of them every result has a size that matches the requested size under the whole-token rule in my README. One Size listings also count as a match.
 
-     Pick something you actually care about getting right. Speed, the empty
-     wardrobe path, what happens when the model can't be reached, whether the
-     search respects a price ceiling — anything, as long as it names a number
-     or an observable outcome. -->
-
-
-
-**Why this target:**
-
+**Why this target:** My size data is messy (S/M, W30 L30, XL (oversized)), so size matching is the part of search most likely to go wrong. I picked 4 of 5 because size L also matches W30 L30, and I expect that edge case to cause a miss.
 
 
 ---
