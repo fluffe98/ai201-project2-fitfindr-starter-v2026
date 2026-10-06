@@ -139,15 +139,28 @@ Finally found the holy grail of denim and they're giving major 90s off-duty mode
 
 **Moment 1**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* Help writing the Tool Inventory spec for
+  search_listings, especially how to match sizes.
+- *What came back:* Claude suggested matching the requested size against
+  whole words in the listing size, so "M" matches "S/M" but "L" does not
+  match "XL". I printed every size in the data to test that. The idea held
+  up, but Claude pointed out two gaps: "One Size" listings, and "L"
+  matching "W30 L30".
+- *What I changed:* I added a rule that One Size listings always pass the
+  size filter. I kept the "L matches W30 L30" side effect and wrote it
+  into the spec as a known issue to look at in unit 4.
 
 **Moment 2**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I gave Claude Code my README spec and asked it to
+  build search_listings, suggest_outfit, create_fit_card and run_agent to
+  match it.
+- *What came back:* Working tools and loop. The happy path found the Y2K
+  baby tee and gave an outfit and a caption. The ballgown query stopped
+  with a message and fit_card stayed None.
+- *What I changed:* [WRITE THIS PART YOURSELF. If you changed nothing in
+  the code, say so, for example: "Nothing in the code. I ran both paths
+  myself and checked the output against my spec."]
 
 <!-- ═══════════════════════ UNIT 4 — THE TEST ═══════════════════════
 
