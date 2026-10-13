@@ -151,22 +151,49 @@ def run_agent(query: str, wardrobe: dict) -> dict:
                 "size": parsed["size"],
                 "max_price": parsed["max_price"],
             })
+            trace.step(
+                "search_listings (via MCP)",
+                inputs=parsed,
+                returned=session["search_results"],
+            )
             if not session["search_results"]:
                 session["error"] = (
                     "No listings matched. Try raising your budget, dropping the "
                     "size, or using broader words."
                 )
+                trace.step(
+                    "stop",
+                    note="branch: search returned [], skipping suggest_outfit and create_fit_card",
+                )
                 return session
             session["selected_item"] = session["search_results"][0]
 
         elif session["outfit_suggestion"] is None:
-            session["outfit_suggestion"] = suggest_outfit(
-                session["selected_item"], session["wardrobe"]
+            try:
+                session["outfit_suggestion"] = suggest_outfit(
+                    session["selected_item"], session["wardrobe"]
+                )
+            except ModelUnavailable as exc:
+                session["error"] = str(exc)
+                return session
+            trace.step(
+                "suggest_outfit",
+                inputs={"new_item": session["selected_item"], "wardrobe": session["wardrobe"]},
+                returned=session["outfit_suggestion"],
             )
 
         else:
-            session["fit_card"] = create_fit_card(
-                session["outfit_suggestion"], session["selected_item"]
+            try:
+                session["fit_card"] = create_fit_card(
+                    session["outfit_suggestion"], session["selected_item"]
+                )
+            except ModelUnavailable as exc:
+                session["error"] = str(exc)
+                return session
+            trace.step(
+                "create_fit_card",
+                inputs={"outfit": session["outfit_suggestion"], "new_item": session["selected_item"]},
+                returned=session["fit_card"],
             )
 
     return session
