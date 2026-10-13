@@ -158,9 +158,8 @@ Finally found the holy grail of denim and they're giving major 90s off-duty mode
 - *What came back:* Working tools and loop. The happy path found the Y2K
   baby tee and gave an outfit and a caption. The ballgown query stopped
   with a message and fit_card stayed None.
-- *What I changed:* [WRITE THIS PART YOURSELF. If you changed nothing in
-  the code, say so, for example: "Nothing in the code. I ran both paths
-  myself and checked the output against my spec."]
+- *What I changed:* Nothing in the code. I ran both paths
+  myself and checked the output against my spec.
 
 <!-- ═══════════════════════ UNIT 4 — THE TEST ═══════════════════════
 
@@ -244,20 +243,30 @@ that produced it:
 **Happy path**
 
 ```
-
+[1] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 10 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Vintage Band Tee — Faded Grey … +7 more
+[2] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: **Outfit 1: Y2K Streetwear** Pair the Y2K Baby Tee — Butterfly Print with your Baggy straight-leg jeans, dark …
+[3] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: Found this absolute dream of a butterfly print baby tee while thrifting and I'm honestly obsessed with the Y2K…
 ```
 
 **Empty search**
 
 ```
-
+[1] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: [] (empty)
+[2] stop
+      →    branch: search returned [], skipping suggest_outfit and create_fit_card
 ```
 
-**On the MCP move:** <!-- what changed in your code, and whether anything
-behaved differently afterwards. If the rewire didn't work, say exactly where it
-broke — the error text and the last thing that worked. That earns the point in
-full. -->
+**On the MCP move:** I moved search_listings behind an MCP server in mcp_server.py, and run_agent() now calls it through mcp_client.call_tool instead of calling the function directly. The result has the same shape as before (a list of listing dicts, and [] when nothing matches), and both example queries behaved the same as before the move.
 
+**Bad API key:** with a wrong key, run_agent() stops cleanly with fit_card as None and this message in session["error"]: "The model rejected your API key. Check GEMINI_API_KEY in your .env file, or create a fresh key at aistudio.google.com."
 
 
 ---
