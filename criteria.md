@@ -25,9 +25,10 @@ Given a query that matches at least one listing, the agent completes all three
 tool calls and returns a fit card — in at least 4 of 5 tries.
 
 **Why this target:**
-<!-- Why 4 of 5 and not 5 of 5? Something about your search, probably —
-     "my search is a plain keyword match and some phrasings will miss" is a
-     real answer. -->
+My search is a plain keyword match, so some phrasings could miss and
+return nothing. A model also writes the outfit and the caption, and a
+model call can fail or skip something. That's why I set 4 of 5 and not
+5 of 5.
 
 ---
 
@@ -37,8 +38,9 @@ Given a query that matches no listings, the agent stops before calling
 `suggest_outfit` and returns a message naming what to change — 5 of 5 tries.
 
 **Why this target:**
-<!-- Why is 5 of 5 reasonable here when criterion 1 isn't? What's different
-     about this path? -->
+The empty case is a plain check on an empty list, with no model involved.
+Nothing random can change it, so if it fails even once, that's a bug in
+my loop. That's why I set 5 of 5.
 
 ---
 
