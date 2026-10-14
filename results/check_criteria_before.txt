@@ -1,0 +1,78 @@
+﻿Criterion 3: selected_item id matches the id passed to suggest_outfit
+
+[1] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 7 items: Denim Jacket ΓÇö Light Wash, Cropped, Vintage Levi's 501 Jeans ΓÇö Medium Wash, 90s Track Jacket ΓÇö Navy/White Stripe ΓÇª +4 more
+[2] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: stub outfit
+[3] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: stub card
+  try 1: PASS  passed to suggest_outfit=lst_007  selected_item=lst_007
+[4] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 7 items: Denim Jacket ΓÇö Light Wash, Cropped, Vintage Levi's 501 Jeans ΓÇö Medium Wash, 90s Track Jacket ΓÇö Navy/White Stripe ΓÇª +4 more
+[5] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: stub outfit
+[6] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: stub card
+  try 2: PASS  passed to suggest_outfit=lst_007  selected_item=lst_007
+[7] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 7 items: Denim Jacket ΓÇö Light Wash, Cropped, Vintage Levi's 501 Jeans ΓÇö Medium Wash, 90s Track Jacket ΓÇö Navy/White Stripe ΓÇª +4 more
+[8] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: stub outfit
+[9] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: stub card
+  try 3: PASS  passed to suggest_outfit=lst_007  selected_item=lst_007
+[10] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 7 items: Denim Jacket ΓÇö Light Wash, Cropped, Vintage Levi's 501 Jeans ΓÇö Medium Wash, 90s Track Jacket ΓÇö Navy/White Stripe ΓÇª +4 more
+[11] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: stub outfit
+[12] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: stub card
+  try 4: PASS  passed to suggest_outfit=lst_007  selected_item=lst_007
+[13] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 7 items: Denim Jacket ΓÇö Light Wash, Cropped, Vintage Levi's 501 Jeans ΓÇö Medium Wash, 90s Track Jacket ΓÇö Navy/White Stripe ΓÇª +4 more
+[14] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: stub outfit
+[15] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: stub card
+  try 5: PASS  passed to suggest_outfit=lst_007  selected_item=lst_007
+
+  Criterion 3: 5 of 5 PASS
+
+Criterion 5: every result's size matches the requested size
+
+  search 'tee', size M:
+    S/M
+    S/M
+    PASS
+  search 'jacket', size L:
+    M/L
+    PASS
+  search 'top', size S:
+    S/M
+    One Size / Oversized
+    S/M
+    S/M
+    PASS
+  search 'sweatshirt', size XL:
+    XL (fits oversized)
+    PASS
+  search 'jeans', size W30:
+    W30 L30
+    PASS
+
+  Criterion 5: 5 of 5 PASS
