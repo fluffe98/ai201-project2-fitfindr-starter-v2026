@@ -161,6 +161,28 @@ Finally found the holy grail of denim and they're giving major 90s off-duty mode
 - *What I changed:* Nothing in the code. I ran both paths
   myself and checked the output against my spec.
 
+**Unit 4, Moment 1**
+
+- *What I asked for:* A way to score criteria 3 and 5, because run_eval.py
+  doesn't show which item reached suggest_outfit or what sizes came back.
+- *What came back:* A script, check_criteria.py. It stubs the two model tools
+  to check the item handoff, and checks every result's size on the five size
+  searches.
+- *What I changed:* I removed the matching scenarios from scenarios.py and
+  saved the script's output to results/ as evidence. I also wrote in the
+  README that criterion 3 only tests the handoff, because the model tools
+  are stubbed.
+
+**Unit 4, Moment 2**
+
+- *What I asked for:* A handler so a bad API key shows a message and not a
+  traceback.
+- *What came back:* My bad-key test still printed "ModelUnavailable:" in the
+  message, and the error was being caught in app.py, not in my loop.
+- *What I changed:* I had the handler moved into run_agent so the message
+  goes into session["error"], and I re-ran the bad-key test to confirm it
+  was clean.
+
 <!-- ═══════════════════════ UNIT 4 — THE TEST ═══════════════════════
 
      Don't fill these in during unit 3.
@@ -182,7 +204,7 @@ Finally found the holy grail of denim and they're giving major 90s off-duty mode
 
 Criterion 1, one try (Try 1), from `results/run_2026-10-13_1956_before.md`, produced by `run_eval.py::main`:
 
-```
+````
 **Try 1**
 
 - stopped early: no
@@ -218,11 +240,11 @@ Trace:
       in:  dict with keys: outfit, new_item
       out: Found this pink and purple butterfly baby tee thrifting and honestly didn't want to part with it, but she need…
 ```
-```
+````
 
 Criterion 2, one try (Try 1), from `results/run_2026-10-13_1956_before.md`, produced by `run_eval.py::main`:
 
-```
+````
 **Try 1**
 
 - stopped early: yes — No listings matched. Try raising your budget, dropping the size, or using broader words.
@@ -238,11 +260,11 @@ Trace:
 [2] stop
       →    branch: search returned [], skipping suggest_outfit and create_fit_card
 ```
-```
+````
 
 Criterion 4, one try (Try 3, the FAIL), from `results/run_2026-10-13_1956_before.md`, produced by `run_eval.py::main`:
 
-```
+````
 **Try 3**
 
 - stopped early: no
@@ -278,7 +300,7 @@ Trace:
       in:  dict with keys: outfit, new_item
       out: Nothing beats finding the ultimate cozy 70s earth tone pants while thrifting, and this rust wide-leg pair is s…
 ```
-```
+````
 
 Criterion 3, all five tries, from `results/check_criteria_before.txt`, produced by `check_criteria.py` (the trace lines between tries are left out):
 
