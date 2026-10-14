@@ -241,11 +241,14 @@ def create_fit_card(outfit: str, new_item: dict) -> str:
         "Write a social media caption (like an Instagram or Depop post) about "
         "a thrift find.\n"
         f"Item: {new_item.get('title')}\n"
-        f"Price: ${new_item.get('price')}\n"
+        f"Price: ${float(new_item.get('price')):.2f}\n"
         f"Platform: {new_item.get('platform')}\n"
         f"Outfit: {outfit.strip()}\n\n"
-        "Rules: exactly 2 to 4 sentences. Mention the item, its price and its "
-        "platform once each. Sound like a real person posting, not a product "
-        "description, and be specific about the vibe. Return only the caption."
+        "Rules: exactly 2 to 4 sentences. The caption must include the item's "
+        "exact title (or its key words, including the material, like "
+        "\"corduroy\"), the price written with two decimals exactly as given "
+        "above (like $32.00), and the platform name, once each. Sound like a "
+        "real person posting, not a product description, and be specific about "
+        "the vibe. Return only the caption."
     )
     return (generate(prompt) or "").strip()
