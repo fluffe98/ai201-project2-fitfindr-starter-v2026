@@ -170,28 +170,154 @@ Finally found the holy grail of denim and they're giving major 90s off-duty mode
 
 ## Run Log — Before
 
-<!-- Five criteria, five tries each, in this exact format.
-
-     Five, because your criteria are written out of five. Mark each try PASS
-     or FAIL, count the passes, and read that count against your target — a
-     row targeting 4 of 5 with three PASS cells is MISSED (3/5).
-
-     `python run_eval.py --label before` runs everything and writes the table
-     into results/. Paste it here and fill in the verdicts. -->
-
 | Criterion | Target | Try 1 | Try 2 | Try 3 | Try 4 | Try 5 | Verdict |
 |---|---|---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |  |  |
+| 1. Matching query completes | 4 of 5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 2. Impossible query stops early | 5 of 5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 3. Same item handed to suggest_outfit | 5 of 5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 4. Fit card shape | 4 of 5 | PASS | PASS | FAIL | PASS | PASS | MET (4/5) |
+| 5. Size filtering (5 searches: M, L, S, XL, W30) | 4 of 5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
 
-**Real output from one try**, pasted as text, naming the file and function
-that produced it:
+**Real output**, pasted as text, naming the file and function that produced it:
+
+Criterion 1, one try (Try 1), from `results/run_2026-10-13_1956_before.md`, produced by `run_eval.py::main`:
 
 ```
+**Try 1**
 
+- stopped early: no
+- selected_item: Y2K Baby Tee — Butterfly Print ($18.0, depop)
+- search_results: 10
+
+Outfit suggestion:
+
+```
+**Outfit 1: Y2K Streetwear**
+Pair the Y2K Baby Tee — Butterfly Print with the baggy straight-leg jeans, dark wash. Layer the black cropped zip hoodie on top, and finish with the chunky white sneakers and black crossbody bag for an effortless, nostalgic look.
+
+**Outfit 2: Casual Contrast**
+Combine the Y2K Baby Tee — Butterfly Print with the wide-leg khaki trousers. Cinch the waist using the brown leather belt, and style with the vintage black denim jacket and black combat boots to balance the tee's feminine pink and purple graphic with a touch of edge.
+```
+
+Fit card:
+
+```
+Found this pink and purple butterfly baby tee thrifting and honestly didn't want to part with it, but she needs a new home. She's giving total early 2000s mall rat energy, whether you style her sweet with low-rise denim or edgy with some combat boots. Grab her on my Depop right now for just $18 before I change my mind!
+```
+
+Trace:
+
+```
+[1] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 10 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Vintage Band Tee — Faded Grey … +7 more
+[2] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: **Outfit 1: Y2K Streetwear** Pair the Y2K Baby Tee — Butterfly Print with the baggy straight-leg jeans, dark w…
+[3] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: Found this pink and purple butterfly baby tee thrifting and honestly didn't want to part with it, but she need…
+```
+```
+
+Criterion 2, one try (Try 1), from `results/run_2026-10-13_1956_before.md`, produced by `run_eval.py::main`:
+
+```
+**Try 1**
+
+- stopped early: yes — No listings matched. Try raising your budget, dropping the size, or using broader words.
+- selected_item: (none)
+- search_results: 0
+
+Trace:
+
+```
+[1] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: [] (empty)
+[2] stop
+      →    branch: search returned [], skipping suggest_outfit and create_fit_card
+```
+```
+
+Criterion 4, one try (Try 3, the FAIL), from `results/run_2026-10-13_1956_before.md`, produced by `run_eval.py::main`:
+
+```
+**Try 3**
+
+- stopped early: no
+- selected_item: Corduroy Wide-Leg Pants — Rust ($32.0, depop)
+- search_results: 2
+
+Outfit suggestion:
+
+```
+**Outfit 1: Cozy 70s Earth Tones**
+Pair the corduroy pants with the white ribbed tank top layered under the oversized grey crewneck sweatshirt. Add the brown leather belt and finish the look with the chunky white sneakers for a relaxed, vintage-inspired everyday fit.
+
+**Outfit 2: Retro Edge**
+Style the rust wide-leg pants with the white ribbed tank top and top it off with the vintage black denim jacket. Cinch the waist with the brown leather belt and step into the black combat boots to lean into the vintage cottagecore meets grunge aesthetic.
+```
+
+Fit card:
+
+```
+Nothing beats finding the ultimate cozy 70s earth tone pants while thrifting, and this rust wide-leg pair is seriously too good to keep. Grab them now on Depop for just $32.0 before I change my mind and keep them for myself!
+```
+
+Trace:
+
+```
+[1] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 2 items: Corduroy Wide-Leg Pants — Rust, Low-Rise Cargo Pants — Khaki
+[2] suggest_outfit
+      in:  dict with keys: new_item, wardrobe
+      out: **Outfit 1: Cozy 70s Earth Tones** Pair the corduroy pants with the white ribbed tank top layered under the ov…
+[3] create_fit_card
+      in:  dict with keys: outfit, new_item
+      out: Nothing beats finding the ultimate cozy 70s earth tone pants while thrifting, and this rust wide-leg pair is s…
+```
+```
+
+Criterion 3, all five tries, from `results/check_criteria_before.txt`, produced by `check_criteria.py` (the trace lines between tries are left out):
+
+```
+Criterion 3: selected_item id matches the id passed to suggest_outfit
+  try 1: PASS  passed to suggest_outfit=lst_007  selected_item=lst_007
+  try 2: PASS  passed to suggest_outfit=lst_007  selected_item=lst_007
+  try 3: PASS  passed to suggest_outfit=lst_007  selected_item=lst_007
+  try 4: PASS  passed to suggest_outfit=lst_007  selected_item=lst_007
+  try 5: PASS  passed to suggest_outfit=lst_007  selected_item=lst_007
+  Criterion 3: 5 of 5 PASS
+```
+
+Criterion 5, from `results/check_criteria_before.txt`, produced by `check_criteria.py`:
+
+```
+Criterion 5: every result's size matches the requested size
+
+  search 'tee', size M:
+    S/M
+    S/M
+    PASS
+  search 'jacket', size L:
+    M/L
+    PASS
+  search 'top', size S:
+    S/M
+    One Size / Oversized
+    S/M
+    S/M
+    PASS
+  search 'sweatshirt', size XL:
+    XL (fits oversized)
+    PASS
+  search 'jeans', size W30:
+    W30 L30
+    PASS
+
+  Criterion 5: 5 of 5 PASS
 ```
 
 ---
@@ -216,15 +342,19 @@ that produced it:
 
 | # | Criterion | Target | Verdict | How I decided |
 |---|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
+| 1 | Matching query completes | 4 of 5 | MET (5/5) | All five tries of "vintage graphic tee under $30" ran all three tools and ended with a fit card and no error. |
+| 2 | Impossible query stops early | 5 of 5 | MET (5/5) | All five tries of "designer ballgown size XXS under $5" stopped after the search with the "raise your budget" message, and the trace has no suggest_outfit or create_fit_card step. |
+| 3 | Same item handed to suggest_outfit | 5 of 5 | MET (5/5) | In all five tries the id passed into suggest_outfit (lst_007) equalled session["selected_item"]["id"]. This used stubbed model tools ("stub outfit", "stub card"), so it tests only the item handoff and not the model output. |
+| 4 | Fit card shape | 4 of 5 | MET (4/5) | I checked each card for 2 to 4 sentences plus the item name, the price and the platform. Try 3 was scored FAIL because the card says "earth tone pants" and "rust wide-leg pair" but never "corduroy", so the other four passed and it met the target at exactly 4 of 5. |
+| 5 | Size filtering | 4 of 5 | MET (5/5) | All five searches (M, L, S, XL, W30) returned at least one result and every result's size matched. It could not fail on "L matches W30 L30", because its wording counts that as a match. |
+
+The reasons written under criteria 1 and 2 in criteria.md were written after the test ran, not before.
 
 **Diagnoses**
 
+No criterion was missed, so there is no miss to diagnose. The targets were fairly safe. If I did this again I would tighten criterion 5 to require that a result matches the size and the search keywords, not only the size.
 
+One weak spot showed up in criterion 4. In Try 3 the fit card dropped the item name, so the prompt in `tools.py::create_fit_card` asks for the item to be mentioned but doesn't force it. The same cards also print the price in different ways ("$32.0", "$32.00" and "$32"), because the prompt passes the raw price number to the model and doesn't format it.
 
 ---
 
